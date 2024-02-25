@@ -1,63 +1,88 @@
 using UnityEngine;
-
+using UnityEngine.Events;
 public class Weapon : MonoBehaviour
 {
-	public GameObject bulletPrefab;
-	public int ammo;
-	public int maxAmmo = 10;
-	public bool isReloading;
-	public bool isAutoFire;
-	public float fireInterval = 0.5f;
-	public float fireCooldown;
+    public GameObject bulletPrefab;
 
-	void Update()
-	{
-		// manual mode
-		if (!isAutoFire && Input.GetKeyDown(KeyCode.Mouse0))
-		{
-			Shoot();
-		}
+    public int ammo;
+    public int maxAmmo = 10;
+    public int clipAmmo;
+    public int clipSize;
 
-		// auto mode
-		if(isAutoFire && Input.GetKey(KeyCode.Mouse0))
-		{
-			Shoot();
-		}
+    public bool isReloading;
+    public bool isAutoFire;
+    public float fireInterval = 0.5f;
+    public float fireCooldown;
+    public int multiMode = 1;
+   
+    public float spread;
+    public UnityEvent onRightClick;
+    public UnityEvent onshoot;
+    public UnityEvent onreload;
+   
+    void Update()
+    {
+        // manual mode
+        if (!isAutoFire && Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            Shoot();
+        }
 
-		if( Input.GetKeyDown(KeyCode.R) && ammo < maxAmmo)
-		{
-			Reload();
-		}
+        // auto mode
+        if (isAutoFire && Input.GetKey(KeyCode.Mouse0))
+        {
+            Shoot();
+        }
 
-		fireCooldown -= Time.deltaTime;
-	}
+        if (Input.GetKeyDown(KeyCode.R) && ammo < maxAmmo)
+        {
+            Reload();
+        }
+        if(Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            onRightClick.Invoke();
+        }
+        fireCooldown -= Time.deltaTime;
+    }
 
-	void Shoot()
-	{
-		if(isReloading) return;
-		if (ammo <= 0)
-		{
-			Reload();
-			return;
-		}
-		if(fireCooldown > 0) return;
+    public void Shoot()
+    {
+        if (isReloading) return;
+        if (clipAmmo <= multiMode)
+        {
+            Reload();
+            return;
+        }
+        if (fireCooldown > 0) return;
+        fireCooldown = fireInterval;
+        clipAmmo--;
 
 
-		ammo--;
-		fireCooldown = fireInterval;
-		Instantiate(bulletPrefab,transform.position,transform.rotation);
-	}
+        for (int i = 0; i < multiMode; i++)
+        {
+            if (clipAmmo > 0)
+            {
+                var rot = transform.rotation * Quaternion.Euler(Random.Range(-spread, spread), Random.Range(-spread, spread), 0);
+                Instantiate(bulletPrefab, transform.position, rot);
+            }
+        }
+    }
 
 
-	async void Reload()
-	{
-		if (isReloading) return;
-		isReloading = true;
+    async void Reload()
+    {
+        if (isReloading) return;
+        isReloading = true;
 
-		await new WaitForSeconds(2f);
+        await new WaitForSeconds(2f);
 
-		ammo = maxAmmo;
-		isReloading = false;
-		print ("Reloaded");
-	}
+        //ammo = maxAmmo;
+        var ammoToReload = Mathf.Min(ammo, clipSize);
+        ammo -= ammoToReload;
+        clipAmmo += ammoToReload;
+
+        isReloading = false;
+        print("Reloaded");
+        onreload.Invoke();  
+    }
 }
