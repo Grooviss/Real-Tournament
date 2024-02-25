@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     [Header("Components")]
     public Health health;
     public Weapon weapon;
+    public CameraShake Shake;
      void Start()
     {
         UpdateUI();
@@ -29,6 +30,8 @@ public class Player : MonoBehaviour
         if(other.gameObject.CompareTag("Enemy"))
         {
             health.Damage(10);
+
+            
         }
     }
     void respawn()
