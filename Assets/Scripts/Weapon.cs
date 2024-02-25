@@ -48,7 +48,7 @@ public class Weapon : MonoBehaviour
     public void Shoot()
     {
         if (isReloading) return;
-        if (clipAmmo <= multiMode)
+        if (clipAmmo <= 0)
         {
             Reload();
             return;
@@ -66,8 +66,9 @@ public class Weapon : MonoBehaviour
                 Instantiate(bulletPrefab, transform.position, rot);
             }
         }
+        onshoot.Invoke();
     }
-
+    
 
     async void Reload()
     {
