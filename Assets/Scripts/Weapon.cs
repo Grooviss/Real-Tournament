@@ -23,25 +23,7 @@ public class Weapon : MonoBehaviour
     void Update()
     {
         // manual mode
-        if (!isAutoFire && Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            Shoot();
-        }
-
-        // auto mode
-        if (isAutoFire && Input.GetKey(KeyCode.Mouse0))
-        {
-            Shoot();
-        }
-
-        if (Input.GetKeyDown(KeyCode.R) && ammo < maxAmmo)
-        {
-            Reload();
-        }
-        if(Input.GetKeyDown(KeyCode.Mouse1))
-        {
-            onRightClick.Invoke();
-        }
+       
         fireCooldown -= Time.deltaTime;
     }
 
@@ -70,7 +52,7 @@ public class Weapon : MonoBehaviour
     }
     
 
-    async void Reload()
+    public async void Reload()
     {
         if (isReloading) return;
         isReloading = true;
