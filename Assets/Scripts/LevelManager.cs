@@ -9,7 +9,7 @@ public class LevelManager : MonoBehaviour
 
     public async  void AnnounceWave(int wave)
     {
-        wavetext.text = $"wave {wave} started";
+        wavetext.text = $"wave {wave+1} started";
             await new WaitForSeconds(2f);
         wavetext.text = "";
     }

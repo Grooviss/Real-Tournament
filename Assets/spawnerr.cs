@@ -15,6 +15,10 @@ public class spawnerr : MonoBehaviour
     public UnityEvent<int> onwavestart;
     public UnityEvent<int> onwaveend;
     public UnityEvent onwavescleared;
+    public AudioClip wavestart;
+    public AudioClip waveend;
+    public AudioClip wavesclearees;
+
     int wave;
     public void Spawn()
     {
@@ -29,6 +33,7 @@ public class spawnerr : MonoBehaviour
         {
             
             enemiesLeft = count;
+            AudioManager.Play(wavestart);
             onwavestart.Invoke(wave);
             while (enemiesLeft > 0)
 
@@ -38,9 +43,9 @@ public class spawnerr : MonoBehaviour
                 enemiesLeft--;
 
             }
-            
-            wave++;
+            AudioManager.Play(waveend);
             onwaveend.Invoke(wave);
+            wave++;
             await new WaitForSeconds(timebetweenwaves
               );
         }

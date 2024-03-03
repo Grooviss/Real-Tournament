@@ -12,6 +12,8 @@ public class Health : MonoBehaviour
 
     public UnityEvent onDamage;
     public UnityEvent onDie;
+    public AudioClip damagetake;
+    public AudioClip diesound;
 
     private void Start()
     {
@@ -20,6 +22,7 @@ public class Health : MonoBehaviour
 
     public void Damage(int damage)
     {
+        AudioManager.Play(damagetake);
         health -= damage;
         onDamage.Invoke();
         if (damageEffect != null) Instantiate(damageEffect, transform.position, Quaternion.identity);
@@ -32,6 +35,7 @@ public class Health : MonoBehaviour
 
     public void Die()
     {
+        AudioManager.Play(diesound);
         onDie.Invoke();
         if (shouldDestroy) Destroy(gameObject);
         if(deathEffect != null) Instantiate(deathEffect, transform.position, Quaternion.identity);

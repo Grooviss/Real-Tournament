@@ -19,6 +19,8 @@ public class Weapon : MonoBehaviour
     public UnityEvent onRightClick;
     public UnityEvent onReload;
     public UnityEvent onShoot;
+    public AudioClip shoot;
+    public AudioClip shotgun;
 
     public bool isReloading;
     float shootCooldown;
@@ -35,6 +37,7 @@ public class Weapon : MonoBehaviour
 
     public void Shoot()
     {
+        AudioManager.Play(shoot);
         if (isReloading) return;
         if (shootCooldown > 0) return;
         if (clipAmmo <= 1)
@@ -49,6 +52,7 @@ public class Weapon : MonoBehaviour
             if (clipAmmo > 0)
             {
                 clipAmmo--;         
+                
                 var bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
                 bullet.transform.eulerAngles += Vector3.one * Random.Range(-spreadAngle, spreadAngle);
             }
